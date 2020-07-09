@@ -616,7 +616,7 @@ local mysql = luasql:connect("vmangos-vanilla","mangos","mangos","127.0.0.1")
 do -- database
   local creature_template = {}
   local query = mysql:execute([[
-    SELECT entry, name, base_attack_time, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 ORDER BY beast_family, level_min, level_max
+    SELECT entry, name, base_attack_time, rank, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 ORDER BY beast_family, level_min, level_max
   ]])
 
   while query:fetch(creature_template, "a") do
@@ -626,6 +626,16 @@ do -- database
     local max = tonumber(creature_template.level_max)
     local family = creature_template.beast_family
     local attackspeed = tonumber(creature_template.base_attack_time)/1000
+    local rank = tonumber(creature_template.rank)
+
+    if rank > 0 and rank < 5 then
+      rank = rank == 1 and "Elite" or rank
+      rank = rank == 2 and "Rare Elite" or rank
+      rank = rank == 3 and "Boss" or rank
+      rank = rank == 4 and "Rare" or rank
+    else
+      rank = ""
+    end
 
     local tableid = #pets + 1
 
@@ -636,6 +646,7 @@ do -- database
     pets[tableid].id = entry
     pets[tableid].model = tonumber(creature_template.display_id1)
     pets[tableid].attackspeed = attackspeed
+    pets[tableid].rank = rank
 
     if spells > 0 then
       local pet_spell_data = {}
@@ -922,7 +933,7 @@ do -- iterate beasts
     --print("<img src='https://classicdb.ch/models/" ..  data.model .. ".gif' onerror=\"this.src='https://classicdb.ch/modelviewer/thumbs/npc/" ..  data.model .. ".png'\"/>")
     print("<img src='img/" ..  model .. ".jpg'/>")
     print("<span class='name'><a href='https://classicdb.ch/?npc=" .. data.id .. "'>" .. data.name .. "</a> <span class='model'>(Model: " .. data.model .. ")</span></span>")
-    print("<span class='subtext'>Level: <b>" .. data.level .. "</b></span>")
+    print("<span class='subtext'>Level: <b>" .. data.level .. "</b>" .. ( data.rank ~= "" and " (<span style='color: #ffaaaa;font-weight: bold;'>" .. data.rank .. "</span>)" or "") .. "</span>")
     print("<span class='subtext'>Attack Speed: <b>" .. data.attackspeed .. "</b></span>")
     if data.spells then
       for build, spelltbl in pairs(data.spells) do
