@@ -1,9 +1,6 @@
 #!/usr/bin/lua
 -- depends on luasql
--- TODO add elite status
 -- TODO sort by patches
--- TODO pet dupicates (patch?)
--- TODO attack speed
 
 local pets = {}
 
@@ -616,7 +613,7 @@ local mysql = luasql:connect("vmangos-vanilla","mangos","mangos","127.0.0.1")
 do -- database
   local creature_template = {}
   local query = mysql:execute([[
-    SELECT entry, name, base_attack_time, rank, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 ORDER BY beast_family, level_min, level_max
+    SELECT entry, name, base_attack_time, rank, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 GROUP BY entry ORDER BY beast_family, level_min, level_max
   ]])
 
   while query:fetch(creature_template, "a") do
