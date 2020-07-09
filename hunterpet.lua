@@ -615,7 +615,7 @@ local stats = {
 local luasql = require("luasql.mysql").mysql()
 local mysql = luasql:connect("vmangos-vanilla","mangos","mangos","127.0.0.1")
 
-do -- pets
+do -- database
   local creature_template = {}
   local query = mysql:execute([[
     SELECT entry, name, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 ORDER BY beast_family, level_min, level_max
@@ -664,7 +664,7 @@ end
 
 do -- css
   print([[
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,600&display=swap" rel="stylesheet" />
   <style>
     body, html {
       margin: auto;
@@ -687,6 +687,27 @@ do -- css
     div img:hover {
       transform: scale(3);
       border: 1px #000000 solid;
+    }
+
+    span.credits {
+      display: block;
+      margin: 20px 0px;
+      padding: 20px;
+      text-align: center;
+      border: 1px #333333 solid;
+      background: #2a2a2a;
+      font-size: 14pt;
+    }
+
+    span.credits a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    span.credits a:hover {
+      color: #33ffcc;
+      text-decoration: underline;
     }
 
     div.family {
@@ -836,6 +857,7 @@ do -- html
     <a id="0" style="margin:auto;float: right; height: 20px;" href="https://shagu.org"><img src="https://raw.githubusercontent.com/shagu/shagu.org/master/_layouts/logo.png"/></a>
     <a href="#0" class="scrollup">Scroll Up</a>
     <h1>Vanilla WoW Hunter Pets</h1>
+    <span class="credits">Made with <span style='color: #ffaaaa'>❤️</span> for <a href="https://gurubashi.org/">Gurubashi-WoW</a>. Based on the <a href="https://github.com/vmangos">VMaNGOS</a> database and <a href="https://www.wow-petopia.com/">Petopia</a> images. Source code hosted on <a href="https://github.com/shagu/vanilla-hunter-pets">GitHub</a></span>
   ]])
 end
 
