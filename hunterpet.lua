@@ -2,8 +2,6 @@
 -- depends on luasql
 -- TODO add elite status
 -- TODO sort by patches
--- TODO credits to vmangos
--- TODO credits to petopia
 -- TODO pet dupicates (patch?)
 -- TODO attack speed
 
@@ -618,7 +616,7 @@ local mysql = luasql:connect("vmangos-vanilla","mangos","mangos","127.0.0.1")
 do -- database
   local creature_template = {}
   local query = mysql:execute([[
-    SELECT entry, name, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 ORDER BY beast_family, level_min, level_max
+    SELECT entry, name, base_attack_time, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 ORDER BY beast_family, level_min, level_max
   ]])
 
   while query:fetch(creature_template, "a") do
@@ -627,6 +625,7 @@ do -- database
     local min = tonumber(creature_template.level_min)
     local max = tonumber(creature_template.level_max)
     local family = creature_template.beast_family
+    local attackspeed = tonumber(creature_template.base_attack_time)/1000
 
     local tableid = #pets + 1
 
@@ -636,6 +635,7 @@ do -- database
     pets[tableid].level = min ~= max and min .. "-" .. max or min
     pets[tableid].id = entry
     pets[tableid].model = tonumber(creature_template.display_id1)
+    pets[tableid].attackspeed = attackspeed
 
     if spells > 0 then
       local pet_spell_data = {}
@@ -746,10 +746,10 @@ do -- css
       text-decoration: underline;
     }
 
-    span.level {
-      display: block;
+    span.subtext {
+      display: inline-block;
       color: #ffffff;
-      padding-left: 5px;
+      padding: 0px 5px 0px 5px;
     }
 
     div.build {
@@ -922,7 +922,8 @@ do -- iterate beasts
     --print("<img src='https://classicdb.ch/models/" ..  data.model .. ".gif' onerror=\"this.src='https://classicdb.ch/modelviewer/thumbs/npc/" ..  data.model .. ".png'\"/>")
     print("<img src='img/" ..  model .. ".jpg'/>")
     print("<span class='name'><a href='https://classicdb.ch/?npc=" .. data.id .. "'>" .. data.name .. "</a> <span class='model'>(Model: " .. data.model .. ")</span></span>")
-    print("<span class='level'>Level: " .. data.level .. "</span>")
+    print("<span class='subtext'>Level: <b>" .. data.level .. "</b></span>")
+    print("<span class='subtext'>Attack Speed: <b>" .. data.attackspeed .. "</b></span>")
     if data.spells then
       for build, spelltbl in pairs(data.spells) do
         print("<div class='build'>")
