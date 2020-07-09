@@ -1,7 +1,5 @@
 #!/usr/bin/lua
 -- depends on luasql
--- TODO sort by patches
-
 local pets = {}
 
 local models = {
@@ -610,10 +608,47 @@ local stats = {
 local luasql = require("luasql.mysql").mysql()
 local mysql = luasql:connect("vmangos-vanilla","mangos","mangos","127.0.0.1")
 
+do -- helper functions
+  -- http://lua-users.org/wiki/SortedIteration
+  function __genOrderedIndex( t )
+    local orderedIndex = {}
+    for key in pairs(t) do
+      table.insert( orderedIndex, key )
+    end
+    table.sort( orderedIndex )
+    return orderedIndex
+  end
+
+  function orderedNext(t, state)
+    local key = nil
+    if state == nil then
+      t.__orderedIndex = __genOrderedIndex( t )
+      key = t.__orderedIndex[1]
+    else
+      for i = 1,#t.__orderedIndex do
+        if t.__orderedIndex[i] == state then
+          key = t.__orderedIndex[i+1]
+        end
+      end
+    end
+
+    if key then
+      return key, t[key]
+    end
+
+    t.__orderedIndex = nil
+    return
+  end
+
+  function opairs(t)
+      return orderedNext, t, nil
+  end
+end
+
 do -- database
   local creature_template = {}
   local query = mysql:execute([[
-    SELECT entry, name, base_attack_time, rank, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 GROUP BY entry ORDER BY beast_family, level_min, level_max
+    SELECT entry, name, base_attack_time, rank, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 GROUP BY entry ORDER BY beast_family, level_min, level_max, name
   ]])
 
   while query:fetch(creature_template, "a") do
@@ -917,7 +952,7 @@ end
 
 do -- iterate beasts
   local lastfamily = 0
-  for id, data in pairs(pets) do
+  for id, data in opairs(pets) do
     if data.family ~= lastfamily then
       print("<div class='family' id='" .. data.family .. "'>Pet Family: " .. families[tonumber(data.family)] .. "</div>")
       lastfamily = data.family
@@ -933,10 +968,10 @@ do -- iterate beasts
     print("<span class='subtext'>Level: <b>" .. data.level .. "</b>" .. ( data.rank ~= "" and " (<span style='color: #ffaaaa;font-weight: bold;'>" .. data.rank .. "</span>)" or "") .. "</span>")
     print("<span class='subtext'>Attack Speed: <b>" .. data.attackspeed .. "</b></span>")
     if data.spells then
-      for build, spelltbl in pairs(data.spells) do
+      for build, spelltbl in opairs(data.spells) do
         print("<div class='build'>")
         print("<span class='build'>" .. (builds[tonumber(build)] and "Patch " .. builds[tonumber(build)] or "All Patches") .. "</span>")
-        for spell, spellid in pairs(spelltbl) do
+        for spell, spellid in opairs(spelltbl) do
           print("<span class='spell'><a href='https://classicdb.ch/?spell=" .. spellid .. "'>[" .. spell .. "]</a></span>")
         end
         print("</div>")
