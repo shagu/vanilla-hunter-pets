@@ -648,7 +648,7 @@ end
 do -- database
   local creature_template = {}
   local query = mysql:execute([[
-    SELECT entry, name, base_attack_time, rank, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 GROUP BY entry ORDER BY beast_family, level_min, level_max, name
+    SELECT entry, name, base_attack_time, rank, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 ORDER BY beast_family, level_min, level_max, name
   ]])
 
   while query:fetch(creature_template, "a") do
@@ -659,6 +659,7 @@ do -- database
     local family = creature_template.beast_family
     local attackspeed = tonumber(creature_template.base_attack_time)/1000
     local rank = tonumber(creature_template.rank)
+    local level = min ~= max and min .. "-" .. max or min
 
     if rank > 0 and rank < 5 then
       rank = rank == 1 and "Elite" or rank
@@ -671,10 +672,16 @@ do -- database
 
     local tableid = #pets + 1
 
+    for id, data in pairs(pets) do -- search for duplicate mobs first
+      if data.name == creature_template.name and data.level == level then
+        tableid = id
+      end
+    end
+
     pets[tableid] = pets[tableid] or {}
     pets[tableid].name = creature_template.name
     pets[tableid].family = creature_template.beast_family
-    pets[tableid].level = min ~= max and min .. "-" .. max or min
+    pets[tableid].level = level
     pets[tableid].id = entry
     pets[tableid].model = tonumber(creature_template.display_id1)
     pets[tableid].attackspeed = attackspeed
