@@ -709,14 +709,18 @@ do -- css
   print([[
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,600&display=swap" rel="stylesheet" />
   <style>
-    body, html {
+    html {
+      background: #1a1a1a !important;
+    }
+
+    body {
       margin: auto;
-      margin-top: 20px;
-      width: 90%;
       max-width: 1200px;
       background: #222222;
       color: #ffffff;
       font-family: Roboto;
+      padding: 50px 50px;
+      box-shadow: 0px 0px 5px 5px #111111;
     }
 
     div img {
