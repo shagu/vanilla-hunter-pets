@@ -896,8 +896,9 @@ do -- css
     }
 
     td a {
-      color: #ffffff;
+      color: #33ffcc;
       text-decoration: none;
+      font-weight: bold;
     }
 
     td a:hover {
