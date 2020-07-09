@@ -679,14 +679,9 @@ do -- css
       background-image: none;
       height: 40px;
       float: right;
-      background: #222222;
-      border: 1px #222222 solid;
       margin: 5px;
-    }
-
-    div img:hover {
-      transform: scale(3);
-      border: 1px #000000 solid;
+      border-radius: 3px;
+      transition: transform .2s;
     }
 
     span.credits {
@@ -723,8 +718,17 @@ do -- css
     div.pet {
       margin: 5px;
       background: #333333;
-      border: 1px #000000 solid;
+      border: 1px #444444 solid;
       color: #000000;
+    }
+
+    div.pet:hover {
+      background: #3a3a3a;
+      border: 1px #888888 solid;
+    }
+
+    div.pet:hover img {
+      transform: scale(4);
     }
 
     span.name {
