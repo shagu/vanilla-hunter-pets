@@ -14,8 +14,6 @@ Showing skills per patch, attack speeds, levels and more.
     # systemctl start mariadb
     # mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
 
-Manually download the latest [VMaNGOS Database](https://github.com/brotalnia/database) and unzip it.
-
 #### Create Users And Permissions
 
     # mysql
@@ -27,7 +25,18 @@ Manually download the latest [VMaNGOS Database](https://github.com/brotalnia/dat
     GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES, EXECUTE, ALTER ROUTINE, CREATE ROUTINE ON `vmangos-vanilla`.* TO 'mangos'@'localhost';
 
 #### Import Databases
+
+Manually download the latest [VMaNGOS Database](https://github.com/brotalnia/database) and unzip it.
+
     $ mysql -u mangos -p"mangos" vmangos-vanilla < world_*.sql
+
+#### VMaNGOS Core (Updates)
+
+Clone the VMaNGOS core to obtain all SQL updates.
+
+    $ git clone https://github.com/vmangos/core.git
+    $ cd core/sql/migrations
+    $ for file in *_world.sql; do mysql -u mangos -p"mangos" vmangos-vanilla < $file; done
 
 ### Build website
 
