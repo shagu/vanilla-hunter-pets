@@ -519,44 +519,16 @@ local models = {
 }
 
 local builds = {
-  [4125] = "1.1.2",
-  [4062] = "1.1.1",
-  [4044] = "1.1.0",
-  [4222] = "1.2.4",
-  [4211] = "1.2.3",
-  [4196] = "1.2.2",
-  [4150] = "1.2.1",
-  [4149] = "1.2.0",
-  [4297] = "1.3.1",
-  [4284] = "1.3.0",
-  [4375] = "1.4.2",
-  [4364] = "1.4.1",
-  [4341] = "1.4.0",
-  [4449] = "1.5.1",
-  [4442] = "1.5.0",
-  [4544] = "1.6.1",
-  [4500] = "1.6.0",
-  [4695] = "1.7.1",
-  [4671] = "1.7.0",
-  [4878] = "1.8.4",
-  [4807] = "1.8.3",
-  [4784] = "1.8.2",
-  [4769] = "1.8.1",
-  [4735] = "1.8.0",
-  [5086] = "1.9.4",
-  [5059] = "1.9.3",
-  [4996] = "1.9.2",
-  [4983] = "1.9.1",
-  [4937] = "1.9.0",
-  [5302] = "1.10.2",
-  [5230] = "1.10.1",
-  [5195] = "1.10",
-  [5464] = "1.11.2",
-  [5462] = "1.11.1",
-  [5428] = "1.11",
-  [5595] = "1.12",
-  [5875] = "1.12.1",
-  [6005] = "1.12.2",
+  [1] = "1.3 ",
+  [2] = "1.4 ",
+  [3] = "1.5 ",
+  [4] = "1.6 ",
+  [5] = "1.7 ",
+  [6] = "1.8 ",
+  [7] = "1.9 ",
+  [8] = "1.10",
+  [9] = "1.11",
+  [10] = "1.12",
 }
 
 local families = {
@@ -648,7 +620,7 @@ end
 do -- database
   local creature_template = {}
   local query = mysql:execute([[
-    SELECT entry, name, base_attack_time, rank, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 ORDER BY beast_family, level_min, level_max, name
+    SELECT entry, patch, name, base_attack_time, rank, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 ORDER BY beast_family, level_min, level_max, name
   ]])
 
   while query:fetch(creature_template, "a") do
@@ -660,6 +632,7 @@ do -- database
     local attackspeed = tonumber(creature_template.base_attack_time)/1000
     local rank = tonumber(creature_template.rank)
     local level = min ~= max and min .. "-" .. max or min
+    local patch = tonumber(creature_template.patch)
 
     if rank > 0 and rank < 5 then
       rank = rank == 1 and "Elite" or rank
@@ -690,7 +663,7 @@ do -- database
     if spells > 0 then
       local pet_spell_data = {}
       local query = mysql:execute([[
-        SELECT * FROM `pet_spell_data` WHERE entry = ]] .. spells .. [[ ORDER BY build
+        SELECT * FROM `pet_spell_data` WHERE entry = ]] .. spells .. [[ ORDER BY build DESC LIMIT 1
       ]])
 
       while query:fetch(pet_spell_data, "a") do
@@ -698,12 +671,12 @@ do -- database
           local spell = tonumber(pet_spell_data["spell_id"..i])
           if spell > 0 then
             pets[tableid].spells = pets[tableid].spells or {}
-            pets[tableid].spells[pet_spell_data.build] = pets[tableid].spells[pet_spell_data.build] or {}
+            pets[tableid].spells[patch] = pets[tableid].spells[patch] or {}
 
             local spell_template = {}
-            local query = mysql:execute([[SELECT entry, build, name, nameSubtext FROM `spell_template` WHERE entry =]] .. spell .. [[ AND build >= ]] .. pet_spell_data.build)
+            local query = mysql:execute([[SELECT entry, name, nameSubtext FROM `spell_template` WHERE entry =]] .. spell .. [[ ORDER BY build DESC LIMIT 1 ]])
             while query:fetch(spell_template, "a") do
-              pets[tableid].spells[pet_spell_data.build][spell_template.name .. " " .. spell_template.nameSubtext] = spell
+              pets[tableid].spells[patch][spell_template.name .. " " .. spell_template.nameSubtext] = spell
             end
           end
         end
@@ -983,7 +956,7 @@ do -- iterate beasts
     if data.spells then
       for build, spelltbl in opairs(data.spells) do
         print("<div class='build'>")
-        print("<span class='build'>" .. (builds[tonumber(build)] and "Patch " .. builds[tonumber(build)] or "All Patches") .. "</span>")
+        print("<span class='build'>" .. (builds[tonumber(build)] and "Patch " .. builds[tonumber(build)] .. "+" or "All Patches") .. "</span>")
         for spell, spellid in opairs(spelltbl) do
           print("<span class='spell'><a href='https://classicdb.ch/?spell=" .. spellid .. "'>[" .. spell .. "]</a></span>")
         end
