@@ -890,7 +890,7 @@ do -- html
     <a id="0" style="margin:auto;float: right; height: 20px;" href="https://shagu.org"><img src="https://raw.githubusercontent.com/shagu/shagu.org/master/_layouts/logo.png"/></a>
     <a href="#0" class="scrollup">Scroll Up</a>
     <h1>Vanilla WoW Hunter Pets</h1>
-    <span class="credits">Made with <span style='color: #ffaaaa'>❤️</span> for <a href="https://gurubashi.org/">Gurubashi-WoW</a>. Based on the <a href="https://github.com/vmangos">VMaNGOS</a> database and <a href="https://www.wow-petopia.com/">Petopia</a> images. Source code on <a href="https://github.com/shagu/vanilla-hunter-pets">GitHub</a></span>
+    <span class="credits">Based on the <a href="https://github.com/vmangos">VMaNGOS</a> database and <a href="https://www.wow-petopia.com/">Petopia</a> images. Source code on <a href="https://github.com/shagu/vanilla-hunter-pets">GitHub</a></span>
   ]])
 end
 
