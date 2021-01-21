@@ -578,7 +578,7 @@ local stats = {
 }
 
 local luasql = require("luasql.mysql").mysql()
-local mysql = luasql:connect("vmangos-vanilla","mangos","mangos","127.0.0.1")
+local mysql = luasql:connect("vmangos","mangos","mangos","127.0.0.1")
 
 do -- helper functions
   -- http://lua-users.org/wiki/SortedIteration
