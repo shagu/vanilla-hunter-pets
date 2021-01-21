@@ -620,7 +620,7 @@ end
 do -- database
   local creature_template = {}
   local query = mysql:execute([[
-    SELECT entry, patch, name, base_attack_time, rank, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 ORDER BY beast_family, level_min, level_max, name
+    SELECT entry, patch, name, base_attack_time, rank, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id, unit_class FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 ORDER BY beast_family, level_min, level_max, name
   ]])
 
   while query:fetch(creature_template, "a") do
@@ -633,6 +633,7 @@ do -- database
     local rank = tonumber(creature_template.rank)
     local level = min ~= max and min .. "-" .. max or min
     local patch = tonumber(creature_template.patch)
+    local caster = tonumber(creature_template.unit_class) == 2 and true or nil
 
     if rank > 0 and rank < 5 then
       rank = rank == 1 and "Elite" or rank
@@ -659,6 +660,7 @@ do -- database
     pets[tableid].model = tonumber(creature_template.display_id1)
     pets[tableid].attackspeed = attackspeed
     pets[tableid].rank = rank
+    pets[tableid].caster = caster
 
     if spells > 0 then
       local pet_spell_data = {}
@@ -952,7 +954,7 @@ do -- iterate beasts
     print("<img src='img/" ..  model .. ".jpg'/>")
     print("<span class='name'><a href='https://classicdb.ch/?npc=" .. data.id .. "'>" .. data.name .. "</a> <span class='model'>(Model: " .. data.model .. ")</span></span>")
     print("<span class='subtext'>Level: <b>" .. data.level .. "</b>" .. ( data.rank ~= "" and " (<span style='color: #ffaaaa;font-weight: bold;'>" .. data.rank .. "</span>)" or "") .. "</span>")
-    print("<span class='subtext'>Attack Speed: <b>" .. data.attackspeed .. "</b></span>")
+    print("<span class='subtext'>Attack Speed: <b>" .. data.attackspeed .. (data.caster and " (<span style='color: #ffaaaa;font-weight: bold;'>Caster</span>)" or "") .. "</b></span>")
     if data.spells then
       for build, spelltbl in opairs(data.spells) do
         print("<div class='build'>")
