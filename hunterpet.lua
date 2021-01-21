@@ -954,7 +954,7 @@ do -- iterate beasts
     print("<img src='img/" ..  model .. ".jpg'/>")
     print("<span class='name'><a href='https://classicdb.ch/?npc=" .. data.id .. "'>" .. data.name .. "</a> <span class='model'>(Model: " .. data.model .. ")</span></span>")
     print("<span class='subtext'>Level: <b>" .. data.level .. "</b>" .. ( data.rank ~= "" and " (<span style='color: #ffaaaa;font-weight: bold;'>" .. data.rank .. "</span>)" or "") .. "</span>")
-    print("<span class='subtext'>Attack Speed: <b>" .. data.attackspeed .. (data.caster and " (<span style='color: #ffaaaa;font-weight: bold;'>Caster</span>)" or "") .. "</b></span>")
+    print("<span class='subtext'>Attack Speed: <b>" .. data.attackspeed .. "</b>" .. (data.caster and " (<span style='color: #ffaaaa;font-weight: bold;'>Caster</span>)" or "") .. "</span>")
     if data.spells then
       for build, spelltbl in opairs(data.spells) do
         print("<div class='build'>")
