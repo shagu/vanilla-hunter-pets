@@ -938,33 +938,48 @@ do -- stats
   ]])
 end
 
+local skips = { "test", "unused" }
+local function devpet(name)
+  local state
+
+  for id, check in pairs(skips) do
+    if string.find(string.lower(name), check) then
+      state = true
+    end
+  end
+
+  return state
+end
+
 do -- iterate beasts
   local lastfamily = 0
   for id, data in opairs(pets) do
-    if data.family ~= lastfamily then
-      print("<div class='family' id='" .. data.family .. "'>Pet Family: " .. families[tonumber(data.family)] .. "</div>")
-      lastfamily = data.family
-    end
-
-    print("<div class='pet'>")
-
-    local model = models[data.model] or "' height=200 style='height: 200 !important;"
-
-    --print("<img src='https://classicdb.ch/models/" ..  data.model .. ".gif' onerror=\"this.src='https://classicdb.ch/modelviewer/thumbs/npc/" ..  data.model .. ".png'\"/>")
-    print("<img src='img/" ..  model .. ".jpg'/>")
-    print("<span class='name'><a href='https://classicdb.ch/?npc=" .. data.id .. "'>" .. data.name .. "</a> <span class='model'>(Model: " .. data.model .. ")</span></span>")
-    print("<span class='subtext'>Level: <b>" .. data.level .. "</b>" .. ( data.rank ~= "" and " (<span style='color: #ffaaaa;font-weight: bold;'>" .. data.rank .. "</span>)" or "") .. "</span>")
-    print("<span class='subtext'>Attack Speed: <b>" .. data.attackspeed .. "</b>" .. (data.caster and " (<span style='color: #ffaaaa;font-weight: bold;'>Caster</span>)" or "") .. "</span>")
-    if data.spells then
-      for build, spelltbl in opairs(data.spells) do
-        print("<div class='build'>")
-        print("<span class='build'>" .. (builds[tonumber(build)] and "Patch " .. builds[tonumber(build)] .. "+" or "All Patches") .. "</span>")
-        for spell, spellid in opairs(spelltbl) do
-          print("<span class='spell'><a href='https://classicdb.ch/?spell=" .. spellid .. "'>[" .. spell .. "]</a></span>")
-        end
-        print("</div>")
+    if not devpet(data.name) then
+      if data.family and data.family ~= lastfamily then
+        print("<div class='family' id='" .. data.family .. "'>Pet Family: " .. families[tonumber(data.family)] .. "</div>")
+        lastfamily = data.family
       end
+
+      print("<div class='pet'>")
+
+      local model = models[data.model] or "unknown"
+
+      --print("<img src='https://classicdb.ch/models/" ..  data.model .. ".gif' onerror=\"this.src='https://classicdb.ch/modelviewer/thumbs/npc/" ..  data.model .. ".png'\"/>")
+      print("<img src='img/" ..  model .. ".jpg'/>")
+      print("<span class='name'><a href='https://classicdb.ch/?npc=" .. data.id .. "'>" .. data.name .. "</a> <span class='model'>(Model: " .. data.model .. ")</span></span>")
+      print("<span class='subtext'>Level: <b>" .. data.level .. "</b>" .. ( data.rank ~= "" and " (<span style='color: #ffaaaa;font-weight: bold;'>" .. data.rank .. "</span>)" or "") .. "</span>")
+      print("<span class='subtext'>Attack Speed: <b>" .. data.attackspeed .. "</b>" .. (data.caster and " (<span style='color: #ffaaaa;font-weight: bold;'>Caster</span>)" or "") .. "</span>")
+      if data.spells then
+        for build, spelltbl in opairs(data.spells) do
+          print("<div class='build'>")
+          print("<span class='build'>" .. (builds[tonumber(build)] and "Patch " .. builds[tonumber(build)] .. "+" or "All Patches") .. "</span>")
+          for spell, spellid in opairs(spelltbl) do
+            print("<span class='spell'><a href='https://classicdb.ch/?spell=" .. spellid .. "'>[" .. spell .. "]</a></span>")
+          end
+          print("</div>")
+        end
+      end
+      print("</div>")
     end
-    print("</div>")
   end
 end
