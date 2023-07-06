@@ -559,7 +559,7 @@ local families = {
 
 local stats = {
   ["Bat"] = { 6, 0, 0, "Fruit, Fungus", "Bite, Dive, Screech" },
-  ["Bear"] = { -9, 5, 8, "Bread, Cheese, Fruit, Fungus, Meat", "Bite, Claw" },
+  ["Bear"] = { -9, 5, 8, "Bread, Cheese, Fish, Fruit, Fungus, Meat", "Bite, Claw" },
   ["Boar"] = { -10, 9, 4, "Bread, Cheese, Fish, Fruit, Fungus, Meat", "Bite, Charge, Dash" },
   ["Carrion Bird"] = { 0, 5, 0, "Fish, Meat", "Bite, Claw, Dive, Screech" },
   ["Cat"] = { 10, 0, -2, "Fish, Meat", "Bite, Claw, Dash, Prowl" },
