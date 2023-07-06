@@ -620,7 +620,7 @@ end
 do -- database
   local creature_template = {}
   local query = mysql:execute([[
-    SELECT entry, patch, name, base_attack_time, rank, display_id1, beast_family, level_min, level_max, spell_list_id, pet_spell_list_id, unit_class FROM `creature_template` WHERE ( type_flags & 1) AND beast_family > 0 ORDER BY beast_family, level_min, level_max, name
+    SELECT entry, patch, name, base_attack_time, rank, display_id1, pet_family, level_min, level_max, spell_list_id, pet_spell_list_id, unit_class FROM `creature_template` WHERE ( type_flags & 1) AND pet_family > 0 ORDER BY pet_family, level_min, level_max, name
   ]])
 
   while query:fetch(creature_template, "a") do
